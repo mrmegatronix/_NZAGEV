@@ -1,0 +1,5 @@
+{
+  "name": "NZ Age Verifier",
+  "description": "Scan NZ IDs to verify 18+ age with privacy-conscious logging.",
+  "requestFramePermissions": ["camera"]
+}
