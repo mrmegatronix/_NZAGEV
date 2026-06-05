@@ -1,7 +1,12 @@
 import { GoogleGenAI, Type } from '@google/genai';
 
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-
+let ai: GoogleGenAI | null = null;
+function getAI() {
+  if (!ai) {
+    ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || 'MISSING_API_KEY_PLEASE_SET_IN_ENV' });
+  }
+  return ai;
+}
 export interface ScanResult {
   documentType: 'NZ Driver Licence' | 'NZ Passport' | 'Kiwi Access Card' | 'Unknown';
   dob: string; // YYYY-MM-DD
@@ -13,6 +18,7 @@ export async function analyzeIdImage(base64Image: string): Promise<ScanResult> {
   const mimeType = base64Image.match(/data:(.*?);base64,/)?.[1] || 'image/jpeg';
   const base64Data = base64Image.replace(/^data:image\/(png|jpeg|webp);base64,/, '');
 
+  const ai = getAI();
   const response = await ai.models.generateContent({
     model: 'gemini-3.1-flash-preview',
     contents: [
